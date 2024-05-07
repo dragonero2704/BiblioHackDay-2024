@@ -1,0 +1,3 @@
+[submodule "gameObj.py"]
+	path = src/gameObj.py
+	url = https://github.com/dragonero2704/gameObj.py.git

@@ -1,10 +1,10 @@
-from pygame.sprite import _Group, Sprite, Group, AbstractGroup, _SpriteSupportsGroup
+from pygame.sprite import Group, Sprite, AbstractGroup
 from pygame.image import load
 from pygame.transform import scale, rotate
 from pygame.surface import Surface
 from pygame.math import Vector2
 from pygame.mask import from_surface
-from vector import Vector2
+from src.vector import Vector2
 
 class GameObject(Sprite):
     def __init__(
@@ -18,7 +18,7 @@ class GameObject(Sprite):
 
             image:Surface = None,
             imagePath:str = None,
-            *groups: AbstractGroup[_SpriteSupportsGroup]) -> None:
+            *groups: AbstractGroup) -> None:
         
         super().__init__(*groups) 
 
@@ -38,7 +38,7 @@ class GameObject(Sprite):
             else:
                 image = load(imagePath)
                 
-        self.origImage = scale(image, self.size)
+        self.origImage = scale(image, self.size.tuple())
         self.image = self.origImage
         self.rect = self.image.get_rect()
         self.mask = from_surface(self.image)
@@ -53,6 +53,18 @@ class GameObject(Sprite):
         self.image = rotate(self.origImage, self.angle)
         self.rect = self.image.get_rect()
         self.mask = from_surface(self.image)
+    
+    def innerOutOfBounds(self, bounds:tuple[4]):
+        return (self.position.x < bounds[0] or 
+                self.position.y < bounds[1] or 
+                self.position.x + self.size.x > bounds[2] or
+                self.position.y + self.size.y > bounds[3])
+
+    def outerOutOfBounds(self, bounds:tuple[4]):
+        return (self.position.x + self.size.x < bounds[0] or 
+                self.position.y + self.size.y < bounds[1] or 
+                self.position.x > bounds[2] or
+                self.position.y > bounds[3])
 
 
 
